@@ -19,8 +19,9 @@ def main(argv):
 			sys.exit()
 		elif opt in ("-d", "--direccion"):
 			url = arg
-			board = url[24:26]
-			threadnumber = url[34:41]
+			url_split = url.split('/')
+			board = url_split[3]
+			threadnumber = url_split[5]
 
 			direccion = 'http://a.4cdn.org/'+board+'/thread/'+threadnumber+'.json'
 
@@ -31,12 +32,18 @@ def main(argv):
 				print('\nDescargando desde: ' + direccion)
 				print('Descargando '+str(largo)+' items...\n')
 
-				os.system('mkdir "'+post['posts'][0]['sub']+'"')
+				carpeta = ' '
+				try:
+					carpeta = post['posts'][0]['sub']+'"'
+					os.system('mkdir "'+carpeta)
+				except:
+					carpeta = post['posts'][0]['semantic_url']+'"'
+					os.system('mkdir "'+carpeta)
 
 				for i in post['posts']:
 					try:
 						os.system('wget http://i.4cdn.org/'+board+'/'+str(i['tim'])+str(i['ext']))
-						os.system('mv "'+str(i['tim'])+str(i['ext'])+'" "'+post['posts'][0]['sub']+'"')
+						os.system('mv "'+str(i['tim'])+str(i['ext'])+'" "'+carpeta)
 					except:
 						print("No hay imagen de esta respuesta")
 			except:
